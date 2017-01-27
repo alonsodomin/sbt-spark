@@ -24,3 +24,4 @@ lazy val allSettings = artifactSettings ++ pluginSettings ++ pluginTestSettings
 lazy val `sbt-spark` = (project in file("."))
   .settings(allSettings)
   .settings(moduleName := "sbt-spark")
+  .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3"))
