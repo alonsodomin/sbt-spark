@@ -11,14 +11,25 @@ object SparkPlugin extends AutoPlugin {
   import AssemblyPlugin.autoImport._
   import autoImport._
 
+  override def requires: Plugins = AssemblyPlugin
+
+  override def projectSettings = sparkDefaultSettings
+
+  private[this] def sparkComponentLib(name: String, sparkV: String) =
+    "org.apache.spark" %% s"spark-${name}" % sparkV % sparkComponentLibScope(name)
+
+  private[this] def sparkComponentLibScope(name: String) = name match {
+    case "core" | "sql" | "hive" | "streaming" => Provided
+    case _                                     => Compile
+  }
+
+  private[this] def allSparkComponents(components: Seq[String], sparkV: String) =
+    components.map(sparkComponentLib(_, sparkV)) :+ sparkComponentLib("core", sparkV)
+
   lazy val sparkDefaultSettings = Seq(
     sparkVersion := "1.6.3",
-    libraryDependencies ++= Seq(
-      "org.apache.spark" %% "spark-core"      % sparkVersion.value % Provided,
-      "org.apache.spark" %% "spark-sql"       % sparkVersion.value % Provided,
-      "org.apache.spark" %% "spark-hive"      % sparkVersion.value % Provided,
-      "org.apache.spark" %% "spark-streaming" % sparkVersion.value % Provided
-    ),
+    sparkComponents := Seq(),
+    libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value),
     run in Compile := Defaults.runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run)).evaluated,
     assemblyMergeStrategy in assembly := {
       case PathList("org","aopalliance", xs @ _*) => MergeStrategy.last
@@ -46,9 +57,5 @@ object SparkPlugin extends AutoPlugin {
     test in assembly := {},
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
   )
-
-  override def requires: Plugins = AssemblyPlugin
-
-  override def projectSettings = sparkDefaultSettings
 
 }
