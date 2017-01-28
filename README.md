@@ -1,5 +1,7 @@
 # SBT Spark
 
+[![Build Status](https://travis-ci.org/alonsodomin/sbt-spark.svg?branch=master)](https://travis-ci.org/alonsodomin/sbt-spark)
+
 This is a very simple plugin focused on adding all the boilerplate that you need to configure a Spark application
  in SBT so you do not have to.
 
