@@ -1,0 +1,24 @@
+language: scala
+
+sudo: false
+
+scala:
+  - 2.10.6
+
+jdk:
+  - openjdk8
+  - openjdk7
+  - openjdk6
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.sbt
+    - $HOME/.ivy2
+
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION scripted
+
+branches:
+  only:
+    - master
