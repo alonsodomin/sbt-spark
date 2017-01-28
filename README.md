@@ -44,7 +44,7 @@ sbt run
 
 Voilà! All set, you are ready to start writing your awesome Spark application!
 
-## Configuration
+## Usage
 
 ### Choosing the Spark version:
 
@@ -71,6 +71,14 @@ sparkComponents ++= Seq("sql", "mllib")
 
 In the last case, the plugin will also handle the dependency scope properly, meaning that the `sql` component will be
 put in the `provided` scope whilst the `mllib` one will be packaged with your app.
+
+### Packaging your application for deployment
+
+`sbt-spark` uses `sbt-assembly` with some sensible defaults. To get a package that you can deploy in your Spark cluster,
+just run `sbt assembly` from the command line.
+
+If you need to customize your package, refer to [`sbt-assembly`'s website](https://github.com/sbt/sbt-assembly), all the
+configuration keys from it are available as if you where using the plugin yourself.
 
 ## FAQ
 
