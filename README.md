@@ -8,7 +8,7 @@ This is a very simple plugin focused on adding all the boilerplate that you need
 Just add the following line to your `project/plugins.sbt` file:
 
 ```
-addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "0.1.0")
+addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "x.y.z")
 ```
 
 Now enable the plugin in your `build.sbt` file:
