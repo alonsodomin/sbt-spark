@@ -8,7 +8,7 @@ This is a very simple plugin focused on adding all the boilerplate that you need
 Just add the following line to your `project/plugins.sbt` file:
 
 ```
-addSbtPlugin("[groupId]" % "sbt-spark" % "0.1.0")
+addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "0.1.0")
 ```
 
 Now enable the plugin in your `build.sbt` file:
@@ -19,8 +19,25 @@ enablePlugins(SparkPlugin)
 
 Write your Spark app:
 
-```
-[SIMPLE EXAMPLE HERE]
+```scala
+import org.apache.spark._
+
+object SimpleSparkApp {
+
+  def main(args: Array[String]): Unit = {
+    val conf = new SparkConf()
+      .setMaster("local[1]")
+      .setAppName("Simple Spark Application")
+      .set("spark.logConf", "false")
+
+    val sc = new SparkContext(conf)
+    val count = sc.parallelize(Seq("Hello", "from", "Spark"), 1).count()
+    println(s"Count result: $count")
+
+    sc.stop()
+  }
+
+}
 ```
 
 And run it!
@@ -29,7 +46,35 @@ And run it!
 sbt run
 ```
 
-Voila! All set, you are ready to start writing your awesome Spark application!
+Voilà! All set, you are ready to start writing your awesome Spark application!
+
+## Configuration
+
+### Choosing the Spark version:
+
+By default the plugin will use Spark `1.6.3`. If you want to use a different version just put the following in your `build.sbt`:
+
+```
+sparkVersion := "1.6.3"
+```
+
+### Adding Spark components (modules) to my build
+
+By default the plugin will only put `spark-core` in your classpath. If you want to use any other additional Spark module just
+ use the following syntax in your `build.sbt` file:
+
+```
+sparkComponents += "sql"
+```
+
+or
+
+```
+sparkComponents ++= Seq("sql", "mllib")
+```
+
+In the last case, the plugin will also handle the dependency scope properly, meaning that the `sql` component will be
+put in the `provided` scope whilst the `mllib` one will be packaged with your app.
 
 ## FAQ
 
@@ -43,15 +88,18 @@ Very little in fact, Spark applications all have the same setup boilerplate:
 
 It's a PITA to repeat this all over again every time you want to start a brand new Spark application, so `sbt-spark` does it for you. Simple as that.
 
-### How do I choose the version of Spark I want to use?
+### How is this different from `sbt-spark-packages`
 
-Just set it in your `build.sbt`:
+Well, it's not really that different, this could even be considered a slimmed down version of the same "utility" but just
+catering to a different audience.
 
-```
-sparkVersion := "2.0.2"
-```
+`sbt-spark-packages` is meant to be used by developers that want to write extensions on top of Spark, _packages_ that other
+Spark applications can use so it's very focused on giving you a good starting point plus a platform to ditribute your packages
+to other users.
 
-Reload SBT now and all your Spark dependencies should have been updated.
+`sbt-spark` is meant to be a boilerplate-free starting point to write Spark applications. It's main audience is Spark developers
+that write _end of the world_ Spark applications. Also, `sbt-spark` could be useful to support tooling around writing Spark applications,
+(i.e.: test harness libraries) which still require the same starting point, but not fit into the _Spark package_ concept.
 
 ### I'm a library author targeting different versions of Spark, can this plugin support "cross Spark compiling"?
 
