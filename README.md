@@ -13,12 +13,6 @@ Just add the following line to your `project/plugins.sbt` file:
 addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "x.y.z")
 ```
 
-Now enable the plugin in your `build.sbt` file:
-
-```
-enablePlugins(SparkPlugin)
-```
-
 Write your Spark app:
 
 ```scala
