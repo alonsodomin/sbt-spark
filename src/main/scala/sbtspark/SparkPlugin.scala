@@ -11,9 +11,11 @@ object SparkPlugin extends AutoPlugin {
   import AssemblyPlugin.autoImport._
   import autoImport._
 
-  override def requires: Plugins = AssemblyPlugin
+  override def requires: Plugins = plugins.JvmPlugin && AssemblyPlugin
 
   override def projectSettings = sparkDefaultSettings
+
+  override def trigger = allRequirements
 
   private[this] def sparkComponentLib(name: String, sparkV: String) =
     "org.apache.spark" %% s"spark-${name}" % sparkV % sparkComponentLibScope(name)
