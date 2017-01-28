@@ -1,31 +1,27 @@
 Start writing your Spark application without copy and pasting of SBT settings from project to project. Just drop
  the following into your `project/plugins.sbt` file:
 
-```
-addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "0.1.0")
-```
+    addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "0.1.0")
 
 Create your Spak main class:
 
-```scala
-import org.apache.spark._
+    import org.apache.spark._
 
-object SimpleSparkApp {
+    object SimpleSparkApp {
 
-  def main(args: Array[String]): Unit = {
-    val conf = new SparkConf()
-      .setMaster("local[1]")
-      .setAppName("Simple Spark Application")
-      .set("spark.logConf", "false")
+      def main(args: Array[String]): Unit = {
+        val conf = new SparkConf()
+          .setMaster("local[1]")
+          .setAppName("Simple Spark Application")
+          .set("spark.logConf", "false")
 
-    val sc = new SparkContext(conf)
-    val count = sc.parallelize(Seq("Hello", "from", "Spark"), 1).count()
-    println(s"Count result: $count")
+        val sc = new SparkContext(conf)
+        val count = sc.parallelize(Seq("Hello", "from", "Spark"), 1).count()
+        println(s"Count result: $count")
 
-    sc.stop()
-  }
+        sc.stop()
+      }
 
-}
-```
+    }
 
 And you are ready to go run it with `sbt run` or packaging it with `sbt assembly`.
