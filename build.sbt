@@ -28,7 +28,6 @@ lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  publishArtifact in (Compile, packageDoc) := false,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishTo := Some(
     if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
