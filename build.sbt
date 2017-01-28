@@ -36,13 +36,6 @@ lazy val publishSettings = Seq(
   ),
   pomExtra :=
     <url>https://github.com/alonsodomin/sbt-spark</url>
-    <licenses>
-      <license>
-        <name>MIT</name>
-        <url>https://opensource.org/licenses/MIT</url>
-        <distribution>repo</distribution>
-      </license>
-    </licenses>
     <scm>
       <url>git@github.com:alonsodomin/sbt-spark.git</url>
       <connection>scm:git:git@github.com:alonsodomin/sbt-spark.git</connection>
