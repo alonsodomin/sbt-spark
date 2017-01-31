@@ -49,11 +49,7 @@ object SparkPlugin extends AutoPlugin {
   private[this] def allSparkComponents(components: Seq[String], sparkV: String) =
     components.map(sparkComponentLib(_, sparkV)) :+ sparkComponentLib("core", sparkV)
 
-  lazy val sparkDefaultSettings = Seq(
-    sparkVersion := "1.6.3",
-    sparkComponents := Seq(),
-    libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value),
-    run in Compile := Defaults.runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run)).evaluated,
+  private[this] lazy val assemblySettings = Seq(
     assemblyMergeStrategy in assembly := {
       case PathList("org","aopalliance", xs @ _*) => MergeStrategy.last
       case PathList("javax", "inject", xs @ _*) => MergeStrategy.last
@@ -80,5 +76,16 @@ object SparkPlugin extends AutoPlugin {
     test in assembly := {},
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
   )
+
+  private[this] lazy val runSettings = Seq(
+    run in Compile := Defaults.runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run)).evaluated,
+    fork in (Compile, run) := true
+  )
+
+  lazy val sparkDefaultSettings = Seq(
+    sparkVersion := "1.6.3",
+    sparkComponents := Seq(),
+    libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value)
+  ) ++ assemblySettings ++ runSettings
 
 }

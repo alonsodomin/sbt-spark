@@ -52,7 +52,7 @@ Voilà! All set, you are ready to start writing your awesome Spark application!
 By default the plugin will use Spark `1.6.3`. If you want to use a different version just put the following in your `build.sbt`:
 
 ```
-sparkVersion := "1.6.3"
+sparkVersion := "2.0.2"
 ```
 
 ### Adding Spark components (modules) to my build
