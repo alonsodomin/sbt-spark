@@ -1,0 +1,3 @@
+Incremental update from 0.1.0 with following additions:
+
+* Use a forked JVM (with sensible JVM defaults) when running the application from SBT

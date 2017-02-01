@@ -79,7 +79,14 @@ object SparkPlugin extends AutoPlugin {
 
   private[this] lazy val runSettings = Seq(
     run in Compile := Defaults.runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run)).evaluated,
-    fork in (Compile, run) := true
+    fork in (Compile, run) := true,
+    javaOptions ++= Seq(
+      "-Xms512M",
+      "-Xmx2048M",
+      "-XX:MaxPermSize=2048M",
+      "-XX:+CMSClassUnloadingEnabled",
+      "-XX:+UseConcMarkSweepGC"
+    )
   )
 
   lazy val sparkDefaultSettings = Seq(
