@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Antonio Alonso Dominguez
+ * Copyright (c) 2017 com.github.alonsodomin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in

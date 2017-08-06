@@ -1,9 +1,8 @@
 import com.typesafe.sbt.pgp.PgpKeys
-import de.heikoseeberger.sbtheader.CommentStyleMapping
-import de.heikoseeberger.sbtheader.license.MIT
 
 lazy val artifactSettings = Seq(
   name := "sbt-spark",
+  startYear := Some(2017),
   organization := "com.github.alonsodomin",
   description := "SBT plugin to start writing Spark apps quickly",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
@@ -22,7 +21,8 @@ lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     "-Dplugin.version=" + version.value,
     "-Dsbttest.base=" + (sourceDirectory.value / "sbt-test").getAbsolutePath
   ),
-  scriptedBufferLog := false
+  scriptedBufferLog := false,
+  crossSbtVersions := Seq("0.13.16", "1.0.0-RC3")
 )
 
 lazy val publishSettings = Seq(
@@ -77,7 +77,6 @@ lazy val `sbt-spark` = (project in file("."))
   .settings(allSettings)
   .enablePlugins(AutomateHeaderPlugin)
   .settings(
-    moduleName := "sbt-spark",
-    headers := CommentStyleMapping.createFrom(MIT, "2017", "Antonio Alonso Dominguez")
+    moduleName := "sbt-spark"
   )
-  .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3"))
+  .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5"))
