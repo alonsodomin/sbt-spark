@@ -4,6 +4,7 @@ lazy val artifactSettings = Seq(
   name := "sbt-spark",
   startYear := Some(2017),
   organization := "com.github.alonsodomin",
+  organizationName := "A. Alonso Dominguez",
   description := "SBT plugin to start writing Spark apps quickly",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   scmInfo := Some(ScmInfo(url("https://github.com/alonsodomin/sbt-spark"), "scm:git:git@github.com:alonsodomin/sbt-spark.git"))
