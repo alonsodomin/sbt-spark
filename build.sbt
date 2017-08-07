@@ -1,10 +1,10 @@
 import com.typesafe.sbt.pgp.PgpKeys
-import de.heikoseeberger.sbtheader.CommentStyleMapping
-import de.heikoseeberger.sbtheader.license.MIT
 
 lazy val artifactSettings = Seq(
   name := "sbt-spark",
+  startYear := Some(2017),
   organization := "com.github.alonsodomin",
+  organizationName := "A. Alonso Dominguez",
   description := "SBT plugin to start writing Spark apps quickly",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   scmInfo := Some(ScmInfo(url("https://github.com/alonsodomin/sbt-spark"), "scm:git:git@github.com:alonsodomin/sbt-spark.git"))
@@ -12,7 +12,11 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  scalaVersion in ThisBuild := "2.10.6"
+  crossSbtVersions := {
+    if (sys.props("java.version") == "1.8") {
+      Seq("0.13.16", "1.0.0-RC3")
+    } else Seq("0.13.16")
+  }
 )
 
 lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
@@ -54,11 +58,11 @@ lazy val releaseSettings = {
       checkSnapshotDependencies,
       inquireVersions,
       runClean,
-      runTest,
+      releaseStepCommandAndRemaining("^ scripted"),
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      publishArtifacts,
+      releaseStepCommandAndRemaining("^ publish"),
       setNextVersion,
       commitNextVersion,
       sonatypeReleaseAll,
@@ -77,7 +81,12 @@ lazy val `sbt-spark` = (project in file("."))
   .settings(allSettings)
   .enablePlugins(AutomateHeaderPlugin)
   .settings(
-    moduleName := "sbt-spark",
-    headers := CommentStyleMapping.createFrom(MIT, "2017", "Antonio Alonso Dominguez")
+    moduleName := "sbt-spark"
   )
-  .settings(addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3"))
+  .settings(
+    //addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")
+    libraryDependencies += {
+      val currentSbtVersion = (sbtBinaryVersion in pluginCrossBuild).value
+      Defaults.sbtPluginExtra("com.eed3si9n" % "sbt-assembly" % "0.14.5", currentSbtVersion, scalaBinaryVersion.value)
+    }
+  )
