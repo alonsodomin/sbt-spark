@@ -50,7 +50,7 @@ lazy val publishSettings = Seq(
 lazy val releaseSettings = {
   import ReleaseTransformations._
 
-  val sonatypeReleaseAll = ReleaseStep(action = Command.process("^ sonatypeReleaseAll", _))
+  val sonatypeReleaseAll = ReleaseStep(action = Command.process("sonatypeReleaseAll", _))
 
   Seq(
     releaseCrossBuild := true,
@@ -63,7 +63,7 @@ lazy val releaseSettings = {
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      releaseStepCommandAndRemaining("^ publish"),
+      releaseStepCommandAndRemaining("^ publishSigned"),
       setNextVersion,
       commitNextVersion,
       sonatypeReleaseAll,
