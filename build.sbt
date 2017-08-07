@@ -32,7 +32,6 @@ lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
   publishArtifact in Test := false,
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishTo := Some(
     if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
     else Opts.resolver.sonatypeStaging
@@ -51,9 +50,11 @@ lazy val publishSettings = Seq(
 lazy val releaseSettings = {
   import ReleaseTransformations._
 
-  val sonatypeReleaseAll = ReleaseStep(action = Command.process("sonatypeReleaseAll", _))
+  val sonatypeReleaseAll = ReleaseStep(action = Command.process("^ sonatypeReleaseAll", _))
 
   Seq(
+    releaseCrossBuild := true,
+    releasePublishArtifactsAction := PgpKeys.publishSigned.value,
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies,
       inquireVersions,
