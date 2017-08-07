@@ -12,7 +12,11 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  scalaVersion in ThisBuild := "2.10.6"
+  crossSbtVersions := {
+    if (sys.props("java.version") == "1.8") {
+      Seq("0.13.16", "1.0.0-RC3")
+    } else Seq("0.13.16")
+  }
 )
 
 lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
@@ -22,8 +26,7 @@ lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
     "-Dplugin.version=" + version.value,
     "-Dsbttest.base=" + (sourceDirectory.value / "sbt-test").getAbsolutePath
   ),
-  scriptedBufferLog := false,
-  crossSbtVersions := Seq("0.13.16", "1.0.0-RC3")
+  scriptedBufferLog := false
 )
 
 lazy val publishSettings = Seq(
