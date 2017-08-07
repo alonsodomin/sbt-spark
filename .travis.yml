@@ -2,9 +2,6 @@ language: scala
 
 sudo: false
 
-scala:
-  - 2.10.6
-
 jdk:
   - oraclejdk8
   - openjdk7
@@ -16,7 +13,7 @@ cache:
     - $HOME/.ivy2
 
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION scripted
+  - sbt ^scripted
 
 branches:
   only:
