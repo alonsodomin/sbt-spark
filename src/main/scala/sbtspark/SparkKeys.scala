@@ -24,8 +24,10 @@ package sbtspark
 import sbt._
 
 trait SparkKeys {
-  val sparkVersion = settingKey[String]("Spark version")
+  val sparkVersion    = settingKey[String]("Spark version")
   val sparkComponents = settingKey[Seq[String]]("Additional Spark components, i.e.: 'streaming', 'hive', etc.")
+
+  val sparkValidateDeps = taskKey[Unit]("Validates the project setup regarding Spark dependencies and their scope.")
 }
 
 object SparkKeys extends SparkKeys
