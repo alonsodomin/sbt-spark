@@ -25,6 +25,7 @@ import sbt._
 import sbtassembly.AssemblyPlugin
 
 object SparkPlugin extends AutoPlugin {
+  private final val SparkOrganization = "org.apache.spark"
 
   object autoImport extends SparkKeys
 
@@ -38,8 +39,39 @@ object SparkPlugin extends AutoPlugin {
 
   override def trigger = allRequirements
 
+  lazy val sparkDefaultSettings = Seq(
+    sparkVersion := "1.6.3",
+    sparkComponents := Seq(),
+    libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value),
+    sparkValidateDeps := validateDependencies.value
+  ) ++ assemblySettings ++ runSettings
+
+  private[this] def validateDependencies = Def.task {
+    val log = streams.value.log
+    val currentSparkVersion = sparkVersion.value
+
+    log.info("Validating Spark dependencies...")
+
+    val invalidDeps = libraryDependencies.value.view
+      .filter(_.organization == SparkOrganization)
+      .flatMap { dep =>
+        val expectedScope = sparkComponentLibScope(dep.name.substring("spark-".length))
+
+        if (dep.revision != currentSparkVersion) {
+          Seq(s"Spark module $dep is using wrong Spark version, expected: $currentSparkVersion.")
+        } else if (!dep.configurations.exists(_ == expectedScope.name)) {
+          Seq(s"Spark module $dep is using wrong scope, expected: $expectedScope.")
+        } else Nil
+      }.toList
+
+    invalidDeps.foreach(log.error(_))
+    if (invalidDeps.size > 0) {
+      sys.error("Please remove any previous conflicting Spark dependencies from your project's libraryDependencies.")
+    }
+  }.dependsOn(update)
+
   private[this] def sparkComponentLib(name: String, sparkV: String) =
-    "org.apache.spark" %% s"spark-${name}" % sparkV % sparkComponentLibScope(name)
+    SparkOrganization %% s"spark-${name}" % sparkV % sparkComponentLibScope(name)
 
   private[this] def sparkComponentLibScope(name: String) = name match {
     case "core" | "sql" | "hive" | "streaming" => Provided
@@ -74,11 +106,13 @@ object SparkPlugin extends AutoPlugin {
         defaultStrategy(x)
     },
     test in assembly := {},
-    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+    assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
+    assembly := assembly.dependsOn(sparkValidateDeps).value
   )
 
   private[this] lazy val runSettings = Seq(
-    run in Compile := Defaults.runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run)).evaluated,
+    run in Compile := Defaults.runTask(fullClasspath in Compile, mainClass in (Compile, run), runner in (Compile, run))
+      .dependsOn(sparkValidateDeps).evaluated,
     fork in (Compile, run) := true,
     javaOptions ++= Seq(
       "-Xms512M",
@@ -88,11 +122,5 @@ object SparkPlugin extends AutoPlugin {
       "-XX:+UseConcMarkSweepGC"
     )
   )
-
-  lazy val sparkDefaultSettings = Seq(
-    sparkVersion := "1.6.3",
-    sparkComponents := Seq(),
-    libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value)
-  ) ++ assemblySettings ++ runSettings
 
 }

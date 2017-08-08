@@ -1,0 +1,8 @@
+# Should fail when validating dependencies
+-> sparkValidateDeps
+
+# Attempt to run the app from SBT but fail
+-> run
+
+# Attempt to build an assembly jar for it but fail
+-> assembly
