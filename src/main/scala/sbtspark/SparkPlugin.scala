@@ -43,24 +43,32 @@ object SparkPlugin extends AutoPlugin {
     sparkVersion := "1.6.3",
     sparkComponents := Seq(),
     libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value),
-    sparkValidateDeps := validateDependencies
+    sparkValidateDeps := validateDependencies.value
   ) ++ assemblySettings ++ runSettings
 
   private[this] def validateDependencies = Def.task {
     val log = streams.value.log
     val currentSparkVersion = sparkVersion.value
-    val invalidDependencies = libraryDependencies.value.filter { dep =>
-      dep.organization == SparkOrganization && (dep.revision != currentSparkVersion || dep.configurations != Some("provided"))
-    }
-    
+
     log.info("Validating Spark dependencies...")
-    invalidDependencies.foreach { module =>
-      log.error("Found module %s in your project's classpath. Spark dependencies should be set using the sparkComponents setting." format module)
-    }
-    if (invalidDependencies.size > 0) {
+
+    val invalidDeps = libraryDependencies.value.view
+      .filter(_.organization == SparkOrganization)
+      .flatMap { dep =>
+        val expectedScope = sparkComponentLibScope(dep.name.substring("spark-".length))
+
+        if (dep.revision != currentSparkVersion) {
+          Seq(s"Spark module $dep is using wrong Spark version, expected: $currentSparkVersion.")
+        } else if (!dep.configurations.exists(_ == expectedScope.name)) {
+          Seq(s"Spark module $dep is using wrong scope, expected: $expectedScope.")
+        } else Nil
+      }.toList
+
+    invalidDeps.foreach(log.error(_))
+    if (invalidDeps.size > 0) {
       sys.error("Please remove any previous conflicting Spark dependencies from your project's libraryDependencies.")
     }
-  }
+  }.dependsOn(update)
 
   private[this] def sparkComponentLib(name: String, sparkV: String) =
     SparkOrganization %% s"spark-${name}" % sparkV % sparkComponentLibScope(name)
@@ -99,7 +107,7 @@ object SparkPlugin extends AutoPlugin {
     },
     test in assembly := {},
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false),
-    assembly in assembly := (assembly in assembly).dependsOn(sparkValidateDeps).value
+    assembly := assembly.dependsOn(sparkValidateDeps).value
   )
 
   private[this] lazy val runSettings = Seq(
