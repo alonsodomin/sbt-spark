@@ -12,10 +12,10 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  crossSbtVersions := Seq("0.13.16", "1.0.0-RC3")
+  crossSbtVersions := Seq("1.0.0", "0.13.16")
 )
 
-lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
+lazy val pluginTestSettings = Seq(
   scriptedLaunchOpts ++= Seq(
     "-Xmx1024M",
     "-XX:MaxPermSize=256M",
@@ -46,8 +46,6 @@ lazy val publishSettings = Seq(
 lazy val releaseSettings = {
   import ReleaseTransformations._
 
-  val sonatypeReleaseAll = ReleaseStep(action = Command.process("sonatypeReleaseAll", _))
-
   Seq(
     releaseCrossBuild := true,
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
@@ -62,7 +60,7 @@ lazy val releaseSettings = {
       releaseStepCommandAndRemaining("^ publishSigned"),
       setNextVersion,
       commitNextVersion,
-      sonatypeReleaseAll,
+      releaseStepCommand("sonatypeReleaseAll"),
       pushChanges
     )
   )
@@ -81,9 +79,9 @@ lazy val `sbt-spark` = (project in file("."))
     moduleName := "sbt-spark"
   )
   .settings(
-    //addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")
-    libraryDependencies += {
+    addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")
+    /*libraryDependencies += {
       val currentSbtVersion = (sbtBinaryVersion in pluginCrossBuild).value
       Defaults.sbtPluginExtra("com.eed3si9n" % "sbt-assembly" % "0.14.5", currentSbtVersion, scalaBinaryVersion.value)
-    }
+    }*/
   )
