@@ -12,7 +12,7 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  crossSbtVersions := Seq("0.13.16", "1.0.0-RC3")
+  crossSbtVersions := Seq("0.13.16", "1.0.0")
 )
 
 lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
@@ -46,8 +46,6 @@ lazy val publishSettings = Seq(
 lazy val releaseSettings = {
   import ReleaseTransformations._
 
-  val sonatypeReleaseAll = ReleaseStep(action = Command.process("sonatypeReleaseAll", _))
-
   Seq(
     releaseCrossBuild := true,
     releasePublishArtifactsAction := PgpKeys.publishSigned.value,
@@ -62,7 +60,7 @@ lazy val releaseSettings = {
       releaseStepCommandAndRemaining("^ publishSigned"),
       setNextVersion,
       commitNextVersion,
-      sonatypeReleaseAll,
+      releaseStepCommand("sonatypeReleaseAll"),
       pushChanges
     )
   )
