@@ -12,10 +12,10 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  crossSbtVersions := Seq("1.0.0", "0.13.16")
+  crossSbtVersions := Seq("0.13.16", "1.0.0")
 )
 
-lazy val pluginTestSettings = Seq(
+lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
   scriptedLaunchOpts ++= Seq(
     "-Xmx1024M",
     "-XX:MaxPermSize=256M",
