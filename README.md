@@ -73,6 +73,16 @@ sparkComponents ++= Seq("sql", "mllib")
 In the last case, the plugin will also handle the dependency scope properly, meaning that the `sql` component will be
 put in the `provided` scope whilst the `mllib` one will be packaged with your app.
 
+### Override scope for individual components
+
+Using the `sparkComponentScope` key you can configure the actual dependency scope of each of the Spark modules:
+
+```
+sparkComponentScope += ("sql" -> Compile)
+```
+
+That will make the `spark-sql` module be in the `Compile` scope.
+
 ### Packaging your application for deployment
 
 `sbt-spark` uses `sbt-assembly` with some sensible defaults. To get a package that you can deploy in your Spark cluster,

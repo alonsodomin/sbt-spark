@@ -33,6 +33,13 @@ object SparkPlugin extends AutoPlugin {
   import AssemblyPlugin.autoImport._
   import autoImport._
 
+  private[this] val defaultSparkComponentScope: Map[String, Configuration] = Map(
+    "core"      -> Provided,
+    "sql"       -> Provided,
+    "hive"      -> Provided,
+    "streaming" -> Provided
+  )
+
   override def requires: Plugins = plugins.JvmPlugin && AssemblyPlugin
 
   override def projectSettings = sparkDefaultSettings
@@ -42,20 +49,22 @@ object SparkPlugin extends AutoPlugin {
   lazy val sparkDefaultSettings = Seq(
     sparkVersion := "1.6.3",
     sparkComponents := Seq(),
-    libraryDependencies ++= allSparkComponents(sparkComponents.value, sparkVersion.value),
+    sparkComponentScope := defaultSparkComponentScope,
+    libraryDependencies ++= allSparkComponents.value,
     sparkValidateDeps := validateDependencies.value
   ) ++ assemblySettings ++ runSettings
 
   private[this] def validateDependencies = Def.task {
     val log = streams.value.log
     val currentSparkVersion = sparkVersion.value
+    val componentScopes = sparkComponentScope.value
 
     log.info("Validating Spark dependencies...")
 
     val invalidDeps = libraryDependencies.value.view
       .filter(_.organization == SparkOrganization)
       .flatMap { dep =>
-        val expectedScope = sparkComponentLibScope(dep.name.substring("spark-".length))
+        val expectedScope = componentScopes.getOrElse(dep.name.substring("spark-".length), Compile)
 
         if (dep.revision != currentSparkVersion) {
           Seq(s"Spark module $dep is using wrong Spark version, expected: $currentSparkVersion.")
@@ -65,21 +74,21 @@ object SparkPlugin extends AutoPlugin {
       }.toList
 
     invalidDeps.foreach(log.error(_))
-    if (invalidDeps.size > 0) {
+    if (invalidDeps.nonEmpty) {
       sys.error("Please remove any previous conflicting Spark dependencies from your project's libraryDependencies.")
     }
   }.dependsOn(update)
 
-  private[this] def sparkComponentLib(name: String, sparkV: String) =
-    SparkOrganization %% s"spark-${name}" % sparkV % sparkComponentLibScope(name)
+  private[this] def allSparkComponents = Def.setting {
+    val scopes = sparkComponentScope.value
+    val components = sparkComponents.value
+    val sparkV = sparkVersion.value
 
-  private[this] def sparkComponentLibScope(name: String) = name match {
-    case "core" | "sql" | "hive" | "streaming" => Provided
-    case _                                     => Compile
-  }
+    def sparkComponentLib(name: String, sparkV: String) =
+      SparkOrganization %% s"spark-$name" % sparkV % scopes.getOrElse(name, Compile)
 
-  private[this] def allSparkComponents(components: Seq[String], sparkV: String) =
     components.map(sparkComponentLib(_, sparkV)) :+ sparkComponentLib("core", sparkV)
+  }
 
   private[this] lazy val assemblySettings = Seq(
     assemblyMergeStrategy in assembly := {
