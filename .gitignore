@@ -90,3 +90,7 @@ build
 ##########
 .ensime
 .ensime_cache
+
+# Scala Metals #
+################
+.metals/

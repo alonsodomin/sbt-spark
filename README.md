@@ -8,10 +8,16 @@ This is a very simple plugin focused on adding all the boilerplate that you need
 
 ## Getting started
 
-Just add the following line to your `project/plugins.sbt` file:
+Add the following line to your `project/plugins.sbt` file:
 
-```
+```scala
 addSbtPlugin("com.github.alonsodomin" % "sbt-spark" % "x.y.z")
+```
+
+Then enable the plugin in your `build.sbt` file:
+
+```scala
+enablePlugins(SparkPlugin)
 ```
 
 Write your Spark app:
@@ -44,6 +50,16 @@ sbt run
 ```
 
 Voilà! All set, you are ready to start writing your awesome Spark application!
+
+## Migrating to 0.4.0
+
+In versions prior to 0.4.0 the plugin used to be enabled by default by just adding the plugin dependency to the project.
+This didn't use to play well with multi-module setups since it led to the annoyance of having to disable it explicitly in
+all the modules that did not require it, including the root project.
+
+Starting at 0.4.0, the plugin needs to be enabled explicitly, this means adding one single line to single-module projects
+(as stated in the _Getting Started_ section) and allows users of multi-module setups to choose which modules do require
+the Spark features and which don't.
 
 ## Usage
 
@@ -81,7 +97,7 @@ Using the `sparkComponentScope` key you can configure the actual dependency scop
 sparkComponentScope += ("sql" -> Compile)
 ```
 
-That will make the `spark-sql` module be in the `Compile` scope.
+That will make the `spark-sql` module be in the `Compile` scope (and therefore making it part of the final assembly jar).
 
 ### Packaging your application for deployment
 
