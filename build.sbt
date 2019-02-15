@@ -79,7 +79,6 @@ lazy val `sbt-spark` = (project in file("."))
     moduleName := "sbt-spark"
   )
   .settings(
-    //addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")
     libraryDependencies += {
       val currentSbtVersion = (sbtBinaryVersion in pluginCrossBuild).value
       Defaults.sbtPluginExtra("com.eed3si9n" % "sbt-assembly" % "0.14.5", currentSbtVersion, scalaBinaryVersion.value)
