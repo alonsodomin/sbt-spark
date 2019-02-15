@@ -44,7 +44,7 @@ object SparkPlugin extends AutoPlugin {
 
   override def projectSettings = sparkDefaultSettings
 
-  override def trigger = allRequirements
+  override def trigger = noTrigger
 
   lazy val sparkDefaultSettings = Seq(
     sparkVersion := "1.6.3",

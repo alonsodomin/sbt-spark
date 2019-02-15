@@ -1,5 +1,7 @@
 scalaVersion := "2.11.8"
 
+enablePlugins(SparkPlugin)
+
 sparkVersion := "2.0.2"
 sparkComponents := Seq("sql")
 
