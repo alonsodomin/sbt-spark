@@ -12,7 +12,7 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  crossSbtVersions := Seq("0.13.16", "1.0.0")
+  crossSbtVersions := Seq("0.13.18", "1.0.0")
 )
 
 lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
