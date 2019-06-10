@@ -45,11 +45,17 @@ object SimpleSparkApp {
 
 And run it!
 
-```
+```bash
 sbt run
 ```
 
-Voilà! All set, you are ready to start writing your awesome Spark application!
+If you want to package it so you can run it from your spark cluster, then use the `assembly` command:
+
+```bash
+sbt assembly
+```
+
+Your application package should be found now under the `target` folder of your local copy. And now you're all set, you are ready to start writing your awesome Spark application!
 
 ## Migrating to 0.4.0
 
@@ -99,10 +105,10 @@ sparkComponentScope += ("sql" -> Compile)
 
 That will make the `spark-sql` module be in the `Compile` scope (and therefore making it part of the final assembly jar).
 
-### Packaging your application for deployment
+### Customizing your application package
 
 `sbt-spark` uses `sbt-assembly` with some sensible defaults. To get a package that you can deploy in your Spark cluster,
-just run `sbt assembly` from the command line.
+just run `sbt assembly` from the command line (as stated before).
 
 If you need to customize your package, refer to [`sbt-assembly`'s website](https://github.com/sbt/sbt-assembly), all the
 configuration keys from it are available as if you where using the plugin yourself.
