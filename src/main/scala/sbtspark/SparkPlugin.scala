@@ -26,6 +26,10 @@ import sbtassembly.AssemblyPlugin
 
 object SparkPlugin extends AutoPlugin {
   private final val SparkOrganization = "org.apache.spark"
+  private final val SparkPrefix = "spark-"
+  private final val SparkValidateSuggestionMsg =
+    "The recommended way of configuring Spark dependencies is by using the 'sparkComponents' key, " ++
+     "since that ensures that the right scope and version is chosen for you; like in the following example:"
 
   object autoImport extends SparkKeys
 
@@ -64,18 +68,27 @@ object SparkPlugin extends AutoPlugin {
     val invalidDeps = libraryDependencies.value.view
       .filter(_.organization == SparkOrganization)
       .flatMap { dep =>
-        val expectedScope = componentScopes.getOrElse(dep.name.substring("spark-".length), Compile)
+        val expectedScope = componentScopes.getOrElse(dep.name.substring(SparkPrefix.length), Compile)
 
         if (dep.revision != currentSparkVersion) {
-          Seq(s"Spark module $dep is using wrong Spark version, expected: $currentSparkVersion.")
+          Seq(dep -> s"Spark module $dep is using wrong Spark version, expected: $currentSparkVersion.")
         } else if (!dep.configurations.exists(_ == expectedScope.name)) {
-          Seq(s"Spark module $dep is using wrong scope, expected: $expectedScope.")
+          Seq(dep -> s"Spark module $dep is using wrong scope, expected: $expectedScope.")
         } else Nil
       }.toList
 
-    invalidDeps.foreach(log.error(_))
+    invalidDeps.map(_._2).foreach(log.error(_))
     if (invalidDeps.nonEmpty) {
-      sys.error("Please remove any previous conflicting Spark dependencies from your project's libraryDependencies.")
+      val helpMsg = {
+        val modules = invalidDeps.map { case (dep, _) =>
+          val moduleName = dep.name.substring(SparkPrefix.length)
+          s""""$moduleName""""
+        }
+        SparkValidateSuggestionMsg ++ s"\n\t\tsparkComponents ++= $modules"
+      }
+
+      log.error(helpMsg)
+      sys.error("Please resolve any previous conflicting Spark dependencies from your project's libraryDependencies.")
     }
   }.dependsOn(update)
 
