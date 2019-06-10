@@ -71,10 +71,10 @@ the Spark features and which don't.
 
 ### Choosing the Spark version:
 
-By default the plugin will use Spark `1.6.3`. If you want to use a different version just put the following in your `build.sbt`:
+By default the plugin will use Spark `2.4.3`. If you want to use a different version just put the following in your `build.sbt`:
 
 ```
-sparkVersion := "2.0.2"
+sparkVersion := "1.6.3"
 ```
 
 ### Adding Spark components (modules) to my build
