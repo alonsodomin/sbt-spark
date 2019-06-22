@@ -1,7 +1,7 @@
 # SBT Spark
 
 [![Build Status](https://travis-ci.org/alonsodomin/sbt-spark.svg?branch=master)](https://travis-ci.org/alonsodomin/sbt-spark)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.alonsodomin/sbt-spark/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.alonsodomin/sbt-spark)
+[![Latest version](https://index.scala-lang.org/alonsodomin/sbt-spark/sbt-spark/latest.svg?color=green)](https://index.scala-lang.org/alonsodomin/sbt-spark)
 
 This is a very simple plugin focused on adding all the boilerplate that you need to configure a Spark application
  in SBT so you do not have to.
