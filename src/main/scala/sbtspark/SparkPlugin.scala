@@ -54,9 +54,20 @@ object SparkPlugin extends AutoPlugin {
     sparkVersion := "2.4.3",
     sparkComponents := Seq(),
     sparkComponentScope := defaultSparkComponentScope,
+    sparkClassifier := "spark",
     libraryDependencies ++= allSparkComponents.value,
-    sparkValidateDeps := validateDependencies.value
-  ) ++ assemblySettings ++ runSettings
+    sparkValidateDeps := validateDependencies.value,
+    publish := publish.dependsOn(assembly).value,
+    publishLocal := publishLocal.dependsOn(assembly).value
+  ) ++ sparkArtifactSettings ++ assemblySettings ++ runSettings
+
+  private[this] lazy val sparkArtifactSettings =
+    Seq(
+      artifact in (Compile, assembly) := {
+        val art = (artifact in (Compile, assembly)).value
+        art.withClassifier(Some(sparkClassifier.value))
+      }
+    ) ++ addArtifact(artifact in (Compile, assembly), assembly)
 
   private[this] def validateDependencies = Def.task {
     val log = streams.value.log
@@ -121,6 +132,11 @@ object SparkPlugin extends AutoPlugin {
       case "META-INF/mimetypes.default" => MergeStrategy.last
       case "plugin.properties" => MergeStrategy.last
       case "log4j.properties" => MergeStrategy.last
+
+      // Netty
+      case PathList("io", "netty", xs @ _*) => MergeStrategy.last
+      case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.concat
+      case PathList("META-INF", "native", "libnetty_transport_native_epoll_x86_64.so") => MergeStrategy.last
 
       case x =>
         // Returns the default strategy

@@ -73,7 +73,7 @@ the Spark features and which don't.
 
 By default the plugin will use Spark `2.4.3`. If you want to use a different version just put the following in your `build.sbt`:
 
-```
+```scala
 sparkVersion := "1.6.3"
 ```
 
@@ -82,13 +82,13 @@ sparkVersion := "1.6.3"
 By default the plugin will only put `spark-core` in your classpath. If you want to use any other additional Spark module just
  use the following syntax in your `build.sbt` file:
 
-```
+```scala
 sparkComponents += "sql"
 ```
 
 or
 
-```
+```scala
 sparkComponents ++= Seq("sql", "mllib")
 ```
 
@@ -99,11 +99,23 @@ put in the `provided` scope whilst the `mllib` one will be packaged with your ap
 
 Using the `sparkComponentScope` key you can configure the actual dependency scope of each of the Spark modules:
 
-```
+```scala
 sparkComponentScope += ("sql" -> Compile)
 ```
 
 That will make the `spark-sql` module be in the `Compile` scope (and therefore making it part of the final assembly jar).
+
+### Publishing artifacts
+
+Although is not usually recommended to publish assembly jars into repositories like Nexus or Artifactory. In several places is considered acceptable with regards to Spark applications, since they are usually not the type of JAR file that others will depend upon.
+
+This plugin will allow you to do so using either the `publishLocal` or `publish` SBT tasks, without any additional configuration. You should see how an artifact with a `spark` classifier has been published to your repository. If interested on customizing this, you can use the following:
+
+```scala
+sparkClassifier := "myclassifier"
+```
+
+That will generate an assembly JAR file with the `myclassifier` suffix.
 
 ### Customizing your application package
 
