@@ -9,7 +9,6 @@ env:
 
 jdk:
   - oraclejdk8
-  - openjdk7
 
 cache:
   directories:
@@ -20,7 +19,3 @@ cache:
 script:
   - sbt ^^$TRAVIS_SBT_VERSION scripted
 
-matrix:
-  exclude:
-    - jdk: openjdk7
-      env: TRAVIS_SBT_VERSION=1.0.0
