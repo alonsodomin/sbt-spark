@@ -98,8 +98,8 @@ object SparkPlugin extends AutoPlugin {
         SparkValidateSuggestionMsg ++ s"\n\t\tsparkComponents ++= $modules"
       }
 
-      log.error(helpMsg)
-      sys.error("Please resolve any previous conflicting Spark dependencies from your project's libraryDependencies.")
+      val errMsg = s"$helpMsg\nPlease resolve any previous conflicting Spark dependencies from your project's libraryDependencies."
+      throw new MessageOnlyException(errMsg)
     }
   }.dependsOn(update)
 
