@@ -138,7 +138,7 @@ object SparkPlugin extends AutoPlugin {
       // Netty
       case PathList("io", "netty", xs @ _*) => MergeStrategy.last
       case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.concat
-      case PathList("META-INF", "native", "libnetty_transport_native_epoll_x86_64.so") => MergeStrategy.last
+      case PathList("META-INF", "native", xs @ _*) => MergeStrategy.last
 
       case x =>
         // Returns the default strategy
