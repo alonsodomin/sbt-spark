@@ -3,4 +3,4 @@
 
 # Build an assembly jar for it
 > assembly
-$ exists target/scala-2.11/simple_spark-2-0-assembly-0.1-SNAPSHOT.jar
+$ exists target/scala-2.11/simple_spark-2-0-assembly-0.1.0-SNAPSHOT.jar

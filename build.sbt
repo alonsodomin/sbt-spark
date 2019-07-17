@@ -12,15 +12,14 @@ lazy val artifactSettings = Seq(
 
 lazy val pluginSettings = Seq(
   sbtPlugin := true,
-  crossSbtVersions := Seq("0.13.18", "1.0.0")
+  crossSbtVersions := Seq("1.2.8", "0.13.18")
 )
 
-lazy val pluginTestSettings = ScriptedPlugin.scriptedSettings ++ Seq(
+lazy val pluginTestSettings = Seq(
   scriptedLaunchOpts ++= Seq(
     "-Xmx1024M",
     "-XX:MaxPermSize=256M",
-    "-Dplugin.version=" + version.value,
-    "-Dsbttest.base=" + (sourceDirectory.value / "sbt-test").getAbsolutePath
+    "-Dplugin.version=" + version.value
   ),
   scriptedBufferLog := false
 )
@@ -74,7 +73,7 @@ lazy val allSettings = artifactSettings ++
 
 lazy val `sbt-spark` = (project in file("."))
   .settings(allSettings)
-  .enablePlugins(AutomateHeaderPlugin)
+  .enablePlugins(AutomateHeaderPlugin, SbtPlugin)
   .settings(
     moduleName := "sbt-spark"
   )
