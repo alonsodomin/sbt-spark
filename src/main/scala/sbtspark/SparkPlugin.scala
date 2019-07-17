@@ -55,6 +55,7 @@ object SparkPlugin extends AutoPlugin {
     sparkComponents := Seq(),
     sparkComponentScope := defaultSparkComponentScope,
     sparkClassifier := "spark",
+    sparkExclusionRules := Seq(),
     libraryDependencies ++= allSparkComponents.value,
     sparkValidateDeps := validateDependencies.value,
     publish := publish.dependsOn(assembly).value,
@@ -107,9 +108,10 @@ object SparkPlugin extends AutoPlugin {
     val scopes = sparkComponentScope.value
     val components = sparkComponents.value
     val sparkV = sparkVersion.value
+    val exclusions = sparkExclusionRules.value
 
     def sparkComponentLib(name: String, sparkV: String) =
-      SparkOrganization %% s"spark-$name" % sparkV % scopes.getOrElse(name, Compile)
+      (SparkOrganization %% s"spark-$name" % sparkV % scopes.getOrElse(name, Compile)).excludeAll(exclusions: _*)
 
     components.map(sparkComponentLib(_, sparkV)) :+ sparkComponentLib("core", sparkV)
   }

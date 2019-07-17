@@ -28,7 +28,8 @@ trait SparkKeys {
   val sparkComponents     = settingKey[Seq[String]]("Additional Spark components, i.e.: 'streaming', 'hive', etc.")
   val sparkComponentScope = settingKey[Map[String, Configuration]]("Dependency scope of the Spark components.")
 
-  val sparkClassifier = settingKey[String]("Artifact JAR Classifier for Spark assembly JAR")
+  val sparkClassifier     = settingKey[String]("Artifact JAR Classifier for Spark assembly JAR")
+  val sparkExclusionRules = settingKey[Seq[ExclusionRule]]("Spark exclusion rules")
 
   val sparkValidateDeps = taskKey[Unit]("Validates the project setup regarding Spark dependencies and their scope.")
 }
