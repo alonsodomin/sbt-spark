@@ -107,7 +107,7 @@ put in the `Provided` scope whilst the `mllib` one will be packaged with your ap
 
 ### Exclude Spark transitive dependencies
 
-Transitive dependencies brought by any of the Spark modules added to the project via the `sparkComponents` setting can be excluded using the `sparkExcludeRules` setting:
+Transitive dependencies brought by any of the Spark modules added to the project via the `sparkComponents` setting can be excluded using the `sparkExclusionRules` setting:
 
 ```scala
 sparkExclusionRules += ExclusionRule(organization = "org.slf4j", name = "slf4j-log4j12")
