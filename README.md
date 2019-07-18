@@ -92,8 +92,28 @@ or
 sparkComponents ++= Seq("sql", "mllib")
 ```
 
-In the last case, the plugin will also handle the dependency scope properly, meaning that the `sql` component will be
-put in the `provided` scope whilst the `mllib` one will be packaged with your app.
+This is equivalent to having the following in your `build.sbt` file:
+
+```scala
+libraryDependencies ++= Seq(
+  "org.apache.spark" %% "spark-core"  % sparkVersion.value % Provided,
+  "org.apache.spark" %% "spark-sql"   % sparkVersion.value % Provided,
+  "org.apache.spark" %% "spark-mllib" % sparkVersion.value % Compile
+)
+```
+
+As you can see, the plugin will also handle the dependency scope properly, meaning that the `sql` component will be
+put in the `Provided` scope whilst the `mllib` one will be packaged with your app.
+
+### Exclude Spark transitive dependencies
+
+Transitive dependencies brought by any of the Spark modules added to the project via the `sparkComponents` setting can be excluded using the `sparkExcludeRules` setting:
+
+```scala
+sparkExclusionRules += ExclusionRule(organization = "org.slf4j", name = "slf4j-log4j12")
+```
+
+That setting will affect as many of the Spark components you have configured previously (removing the boilerplate of having to add similar rules to each of your Spark dependencies).
 
 ### Override scope for individual components
 
