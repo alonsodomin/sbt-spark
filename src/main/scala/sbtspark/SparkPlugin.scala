@@ -134,6 +134,7 @@ object SparkPlugin extends AutoPlugin {
       case "META-INF/mimetypes.default" => MergeStrategy.last
       case "plugin.properties" => MergeStrategy.last
       case "log4j.properties" => MergeStrategy.last
+      case PathList("META-INF", "services", xs @ _*) => MergeStrategy.concat
 
       // Netty
       case PathList("io", "netty", xs @ _*) => MergeStrategy.last
