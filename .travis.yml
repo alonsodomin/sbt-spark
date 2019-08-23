@@ -8,7 +8,8 @@ env:
     - TRAVIS_SBT_VERSION=1.2.8
 
 jdk:
-  - oraclejdk8
+  - openjdk8
+  - openjdk11
 
 cache:
   directories:
