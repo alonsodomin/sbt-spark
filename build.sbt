@@ -1,4 +1,4 @@
-import com.typesafe.sbt.pgp.PgpKeys
+import com.jsuereth.sbtpgp.PgpKeys
 
 lazy val artifactSettings = Seq(
   name := "sbt-spark",
